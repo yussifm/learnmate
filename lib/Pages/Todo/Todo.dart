@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:learnmate/Pages/Todo/widgets/NoTodoContainer.dart';
+import 'package:learnmate/Pages/Todo/widgets/todoStatusContainer.dart';
 
 class Todo extends StatefulWidget {
   const Todo({Key? key}) : super(key: key);
@@ -8,92 +11,85 @@ class Todo extends StatefulWidget {
 }
 
 class _TodoState extends State<Todo> {
+  List todoData = [
+    {
+      "title": "buy  eggs",
+      "desc": "buy eggs 10",
+      "isDone": false,
+      "color": "red"
+    },
+    {
+      "title": "buy  eggs",
+      "desc": "buy eggs 10",
+      "isDone": false,
+      "color": "blue"
+    },
+    {
+      "title": "buy  eggs",
+      "desc": "buy eggs 10",
+      "isDone": true,
+      "color": "green"
+    },
+    {
+      "title": "buy  eggs",
+      "desc": "buy eggs 10",
+      "isDone": false,
+      "color": "pink"
+    },
+  ];
+
+  bool checkTodoListIsEmpty() {
+    if (todoData.length < 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    checkTodoListIsEmpty();
+    super.setState(fn);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        splashColor: Colors.pink[800],
+        tooltip: "Add to your todo",
+        elevation: 5.0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        backgroundColor: Colors.pink[500],
+        onPressed: () {},
+        child: Icon(
+          Icons.add_rounded,
+          size: 40,
+        ),
+      ),
       backgroundColor: Colors.black,
       body: CustomScrollView(
         slivers: [
           _buildSliverAppBar(context),
-          SliverToBoxAdapter(
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(60), topRight: Radius.circular(5)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildToDoStatusContainer(),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildToDoStatusContainer() {
-    return Container(
-      height: 100,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.all(
-                  Radius.circular(20),
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text("2 Done", style: TextStyle(color: Colors.grey)),
-                  Container(
-                    padding: EdgeInsets.all(5),
-                    margin: EdgeInsets.only(left: 5),
+          checkTodoListIsEmpty()
+              ? NoTodoContainer()
+              : SliverToBoxAdapter(
+                  child: Container(
                     decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.grey[400]),
-                    child: Icon(
-                      (Icons.done),
-                      color: Colors.green,
-                      size: 25,
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(60),
+                          topRight: Radius.circular(10)),
                     ),
-                  )
-                ],
-              )),
-          Container(
-              padding: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.grey[200],
-                borderRadius: BorderRadius.all(
-                  Radius.circular(20),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    "5 Pending",
-                    style: TextStyle(color: Colors.grey),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        buildToDoStatusContainer(
+                            doneTodos: "5", pendingTodos: "3"),
+                      ],
+                    ),
                   ),
-                  Container(
-                    padding: EdgeInsets.all(5),
-                    margin: EdgeInsets.only(left: 5),
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle, color: Colors.grey[400]),
-                    child: Icon(
-                      (Icons.done),
-                      color: Colors.red,
-                      size: 25,
-                    ),
-                  )
-                ],
-              )),
+                ),
         ],
       ),
     );
@@ -103,6 +99,10 @@ class _TodoState extends State<Todo> {
     return SliverAppBar(
       backgroundColor: Colors.black,
       expandedHeight: 90,
+      floating: true,
+      pinned: false,
+      snap: true,
+      stretch: true,
       leading: IconButton(
         onPressed: () {
           Navigator.pop(context);
@@ -127,8 +127,11 @@ class _TodoState extends State<Todo> {
             SizedBox(
               height: 5,
             ),
-            Text("You have 0 To-dos ",
-                style: TextStyle(color: Colors.grey, fontSize: 10))
+            checkTodoListIsEmpty()
+                ? Text("You have NO To-do",
+                    style: TextStyle(color: Colors.pink[50], fontSize: 10))
+                : Text("You have ${todoData.length} To-dos ",
+                    style: TextStyle(color: Colors.pink[50], fontSize: 10))
           ],
         ),
       ),
